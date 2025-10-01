@@ -16,9 +16,7 @@ const Layout = () => {
   const menuItems = [
     { icon: BarChart3, label: "Dashboard", path: "/dashboard" },
     { icon: FileText, label: "Arsip Pasien", path: "/arsip" },
-    { icon: Search, label: "Pencarian", path: "/pencarian" },
-    { icon: Users, label: "Manajemen User", path: "/users" },
-    { icon: Settings, label: "Pengaturan", path: "/pengaturan" },
+    { icon: Search, label: "Pencarian Arsip", path: "/pencarian" },
   ];
 
   const handleLogout = () => {
