@@ -7,7 +7,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { 
   Plus, 
   Search, 
@@ -30,49 +29,42 @@ const ArsipPasien = () => {
   
   const [arsipData, setArsipData] = useState([
     {
-      id: "ARS001",
+      id: "NRM001",
       nama: "Maria Santos",
       usia: 28,
       jenisKelamin: "Perempuan",
       diagnosis: "Gangguan Kecemasan",
       tanggal: "2024-01-15",
-      psikolog: "Dr. Sarah Ahmad",
-      kategori: "Konseling",
-      status: "Aktif"
+      dokter: "Dr. Sarah Ahmad",
+      kodeArsip: "K-2024-001"
     },
     {
-      id: "ARS002",
+      id: "NRM002",
       nama: "Ahmad Rahman",
       usia: 35,
       jenisKelamin: "Laki-laki",
       diagnosis: "Depresi Ringan",
       tanggal: "2024-01-14",
-      psikolog: "Dr. John Doe",
-      kategori: "Tes Psikologi",
-      status: "Selesai"
+      dokter: "Dr. John Doe",
+      kodeArsip: "TP-2024-002"
     },
     {
-      id: "ARS003",
+      id: "NRM003",
       nama: "Siti Nurhaliza",
       usia: 23,
       jenisKelamin: "Perempuan",
       diagnosis: "Stress Akademik",
       tanggal: "2024-01-13",
-      psikolog: "Dr. Lisa Wong",
-      kategori: "Konseling",
-      status: "Aktif"
+      dokter: "Dr. Lisa Wong",
+      kodeArsip: "K-2024-003"
     }
   ]);
 
   const [formData, setFormData] = useState({
     nama: "",
-    usia: "",
-    jenisKelamin: "",
-    diagnosis: "",
     tanggal: "",
-    psikolog: "",
-    kategori: "",
-    catatan: "",
+    dokter: "",
+    kodeArsip: "",
     file: null as File | null
   });
 
@@ -80,35 +72,30 @@ const ArsipPasien = () => {
     const matchesSearch = item.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          item.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          item.diagnosis.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || item.kategori === selectedCategory;
+    const matchesCategory = selectedCategory === "all" || item.kodeArsip.includes(selectedCategory);
     return matchesSearch && matchesCategory;
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newId = `ARS${String(arsipData.length + 1).padStart(3, '0')}`;
+    const newId = `NRM${String(arsipData.length + 1).padStart(3, '0')}`;
     const newArsip = {
       id: newId,
       nama: formData.nama,
-      usia: parseInt(formData.usia),
-      jenisKelamin: formData.jenisKelamin,
-      diagnosis: formData.diagnosis,
+      usia: 0,
+      jenisKelamin: "",
+      diagnosis: "",
       tanggal: formData.tanggal,
-      psikolog: formData.psikolog,
-      kategori: formData.kategori,
-      status: "Aktif"
+      dokter: formData.dokter,
+      kodeArsip: formData.kodeArsip
     };
     
     setArsipData([...arsipData, newArsip]);
     setFormData({
       nama: "",
-      usia: "",
-      jenisKelamin: "",
-      diagnosis: "",
       tanggal: "",
-      psikolog: "",
-      kategori: "",
-      catatan: "",
+      dokter: "",
+      kodeArsip: "",
       file: null
     });
     setIsDialogOpen(false);
@@ -153,109 +140,58 @@ const ArsipPasien = () => {
             </DialogHeader>
             
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="nama">Nama Pasien *</Label>
-                  <Input
-                    id="nama"
-                    value={formData.nama}
-                    onChange={(e) => setFormData({...formData, nama: e.target.value})}
-                    required
-                    placeholder="Masukkan nama lengkap"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="usia">Usia *</Label>
-                  <Input
-                    id="usia"
-                    type="number"
-                    value={formData.usia}
-                    onChange={(e) => setFormData({...formData, usia: e.target.value})}
-                    required
-                    placeholder="Masukkan usia"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="jenisKelamin">Jenis Kelamin *</Label>
-                  <Select onValueChange={(value) => setFormData({...formData, jenisKelamin: value})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Pilih jenis kelamin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Laki-laki">Laki-laki</SelectItem>
-                      <SelectItem value="Perempuan">Perempuan</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="tanggal">Tanggal Konseling *</Label>
-                  <Input
-                    id="tanggal"
-                    type="date"
-                    value={formData.tanggal}
-                    onChange={(e) => setFormData({...formData, tanggal: e.target.value})}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="psikolog">Psikolog Penanggung Jawab *</Label>
-                  <Select onValueChange={(value) => setFormData({...formData, psikolog: value})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Pilih psikolog" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Dr. John Doe">Dr. John Doe</SelectItem>
-                      <SelectItem value="Dr. Sarah Ahmad">Dr. Sarah Ahmad</SelectItem>
-                      <SelectItem value="Dr. Lisa Wong">Dr. Lisa Wong</SelectItem>
-                      <SelectItem value="Dr. Michael Chen">Dr. Michael Chen</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="kategori">Kategori *</Label>
-                  <Select onValueChange={(value) => setFormData({...formData, kategori: value})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Pilih kategori" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Konseling">Konseling</SelectItem>
-                      <SelectItem value="Tes Psikologi">Tes Psikologi</SelectItem>
-                      <SelectItem value="Laporan Medis">Laporan Medis</SelectItem>
-                      <SelectItem value="Terapi">Terapi</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
               <div className="space-y-2">
-                <Label htmlFor="diagnosis">Diagnosis Awal *</Label>
+                <Label htmlFor="nama">Nama Pasien *</Label>
                 <Input
-                  id="diagnosis"
-                  value={formData.diagnosis}
-                  onChange={(e) => setFormData({...formData, diagnosis: e.target.value})}
+                  id="nama"
+                  value={formData.nama}
+                  onChange={(e) => setFormData({...formData, nama: e.target.value})}
                   required
-                  placeholder="Masukkan diagnosis awal"
+                  placeholder="Masukkan nama lengkap"
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="kodeArsip">Kode Arsip *</Label>
+                <Input
+                  id="kodeArsip"
+                  value={formData.kodeArsip}
+                  onChange={(e) => setFormData({...formData, kodeArsip: e.target.value})}
+                  required
+                  placeholder="Contoh: K-2024-001"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="tanggal">Tanggal Registrasi *</Label>
+                <Input
+                  id="tanggal"
+                  type="date"
+                  value={formData.tanggal}
+                  onChange={(e) => setFormData({...formData, tanggal: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="dokter">Dokter Penanggung Jawab *</Label>
+                <Select onValueChange={(value) => setFormData({...formData, dokter: value})}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih dokter" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Dr. John Doe">Dr. John Doe</SelectItem>
+                    <SelectItem value="Dr. Sarah Ahmad">Dr. Sarah Ahmad</SelectItem>
+                    <SelectItem value="Dr. Lisa Wong">Dr. Lisa Wong</SelectItem>
+                    <SelectItem value="Dr. Michael Chen">Dr. Michael Chen</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="catatan">Catatan Tambahan</Label>
-                <Textarea
-                  id="catatan"
-                  value={formData.catatan}
-                  onChange={(e) => setFormData({...formData, catatan: e.target.value})}
-                  placeholder="Catatan atau informasi tambahan"
-                  rows={3}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="file">Upload File (PDF/JPG)</Label>
+                <Label htmlFor="file">Upload File (PDF)</Label>
                 <div className="flex items-center gap-2">
                   <Input
                     id="file"
                     type="file"
-                    accept=".pdf,.jpg,.jpeg,.png"
+                    accept=".pdf"
                     onChange={(e) => setFormData({...formData, file: e.target.files?.[0] || null})}
                     className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/80"
                   />
@@ -288,7 +224,7 @@ const ArsipPasien = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <Input
-                placeholder="Cari berdasarkan ID, nama, atau diagnosis..."
+                placeholder="Cari berdasarkan ID NRM, nama pasien, atau kode arsip..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full"
@@ -326,13 +262,11 @@ const ArsipPasien = () => {
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">
-                  <TableHead>ID Arsip</TableHead>
+                  <TableHead>ID NRM</TableHead>
                   <TableHead>Nama Pasien</TableHead>
-                  <TableHead>Diagnosis</TableHead>
-                  <TableHead>Tanggal</TableHead>
-                  <TableHead>Psikolog</TableHead>
-                  <TableHead>Kategori</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>Kode Arsip</TableHead>
+                  <TableHead>Tanggal Registrasi</TableHead>
+                  <TableHead>Dokter</TableHead>
                   <TableHead>Aksi</TableHead>
                 </TableRow>
               </TableHeader>
@@ -346,27 +280,18 @@ const ArsipPasien = () => {
                         {item.nama}
                       </div>
                     </TableCell>
-                    <TableCell>{item.diagnosis}</TableCell>
+                    <TableCell>
+                      <Badge variant="secondary" className="text-xs">
+                        {item.kodeArsip}
+                      </Badge>
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-muted-foreground" />
                         {new Date(item.tanggal).toLocaleDateString('id-ID')}
                       </div>
                     </TableCell>
-                    <TableCell>{item.psikolog}</TableCell>
-                    <TableCell>
-                      <Badge variant="secondary" className="text-xs">
-                        {item.kategori}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant={item.status === 'Aktif' ? 'default' : 'outline'}
-                        className="text-xs"
-                      >
-                        {item.status}
-                      </Badge>
-                    </TableCell>
+                    <TableCell>{item.dokter}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
                         <Button size="sm" variant="ghost" className="h-8 w-8 p-0">

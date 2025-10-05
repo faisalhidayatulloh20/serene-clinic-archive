@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Brain, BarChart3, FileText, Users, Settings, Search, Bell, User, LogOut, Menu } from "lucide-react";
+import { Brain, BarChart3, FileText, Search, Bell, User, LogOut, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -17,8 +17,6 @@ const Layout = () => {
     { icon: BarChart3, label: "Dashboard", path: "/dashboard" },
     { icon: FileText, label: "Arsip Pasien", path: "/arsip" },
     { icon: Search, label: "Pencarian", path: "/pencarian" },
-    { icon: Users, label: "Manajemen User", path: "/users" },
-    { icon: Settings, label: "Pengaturan", path: "/pengaturan" },
   ];
 
   const handleLogout = () => {
@@ -140,10 +138,6 @@ const Layout = () => {
                   <DropdownMenuItem onClick={() => navigate("/profile")}>
                     <User className="mr-2 h-4 w-4" />
                     <span>Profil</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/pengaturan")}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Pengaturan</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-destructive">
