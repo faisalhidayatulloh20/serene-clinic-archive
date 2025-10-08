@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Brain, BarChart3, FileText, Search, Bell, User, LogOut, Menu } from "lucide-react";
+import { Brain, BarChart3, FileText, Search, Bell, User, LogOut, Menu, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -16,7 +16,8 @@ const Layout = () => {
   const menuItems = [
     { icon: BarChart3, label: "Dashboard", path: "/dashboard" },
     { icon: FileText, label: "Arsip Pasien", path: "/arsip" },
-    { icon: Search, label: "Pencarian", path: "/pencarian" },
+    { icon: Search, label: "Pencarian Arsip", path: "/pencarian" },
+    { icon: Users, label: "Manajemen User", path: "/users" },
   ];
 
   const handleLogout = () => {

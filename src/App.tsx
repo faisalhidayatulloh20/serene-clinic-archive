@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import ArsipPasien from "./pages/ArsipPasien";
 import Pencarian from "./pages/Pencarian";
 import DetailArsip from "./pages/DetailArsip";
+import ManajemenUser from "./pages/ManajemenUser";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,8 +28,7 @@ const App = () => (
             <Route path="/arsip" element={<ArsipPasien />} />
             <Route path="/arsip/:id" element={<DetailArsip />} />
             <Route path="/pencarian" element={<Pencarian />} />
-            <Route path="/users" element={<div className="p-6"><h1 className="text-2xl font-bold">Manajemen User</h1><p className="text-muted-foreground">Halaman manajemen user akan segera tersedia</p></div>} />
-            <Route path="/pengaturan" element={<div className="p-6"><h1 className="text-2xl font-bold">Pengaturan</h1><p className="text-muted-foreground">Halaman pengaturan akan segera tersedia</p></div>} />
+            <Route path="/users" element={<ManajemenUser />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

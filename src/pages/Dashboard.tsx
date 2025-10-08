@@ -3,7 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { 
   Users, 
-  Heart
+  Heart,
+  Plus,
+  Search
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -60,6 +62,36 @@ const Dashboard = () => {
           color="text-info"
         />
       </div>
+
+      {/* Quick Actions */}
+      <Card className="shadow-card border-0">
+        <CardHeader>
+          <CardTitle>Aksi Cepat</CardTitle>
+          <CardDescription>Shortcut untuk fitur yang sering digunakan</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Button 
+              onClick={() => navigate("/arsip")} 
+              className="h-auto py-4 flex-col gap-2"
+              variant="outline"
+            >
+              <Plus className="h-6 w-6" />
+              <span className="font-semibold">Tambah Arsip</span>
+              <span className="text-xs text-muted-foreground">Buat arsip pasien baru</span>
+            </Button>
+            <Button 
+              onClick={() => navigate("/pencarian")} 
+              className="h-auto py-4 flex-col gap-2"
+              variant="outline"
+            >
+              <Search className="h-6 w-6" />
+              <span className="font-semibold">Pencarian Arsip</span>
+              <span className="text-xs text-muted-foreground">Cari arsip pasien</span>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
