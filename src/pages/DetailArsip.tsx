@@ -1,364 +1,338 @@
-import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  ArrowLeft,
-  User,
-  Calendar,
-  FileText,
-  Download,
-  Edit,
-  Brain,
-  Heart,
-  Activity,
-  Clock,
-  MapPin,
-  Phone,
-  Mail
-} from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowLeft, Plus, Eye, Edit, Trash2, Download, FileText } from "lucide-react";
 
 const DetailArsip = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  // Mock data - in real app, this would be fetched based on ID
+  // Mock arsip data
   const [arsipData] = useState({
-    id: "ARS001",
-    nama: "Maria Santos",
-    usia: 28,
-    jenisKelamin: "Perempuan",
-    diagnosis: "Gangguan Kecemasan",
-    tanggal: "2024-01-15",
-    psikolog: "Dr. Sarah Ahmad",
-    kategori: "Konseling",
-    status: "Aktif",
-    
-    // Biodata lengkap
-    alamat: "Jl. Merdeka No. 123, Jakarta Pusat",
-    noTelepon: "081234567890",
-    email: "maria.santos@email.com",
-    pendidikan: "S1 Psikologi",
-    pekerjaan: "Marketing Executive",
-    statusPernikahan: "Belum Menikah",
-    riwayatMedis: "Tidak ada riwayat penyakit serius",
-    
-    // Hasil konseling
-    diagnosisLengkap: `Pasien menunjukkan gejala gangguan kecemasan generalisata dengan tingkat keparahan sedang. 
-    Gejala yang dialami meliputi kekhawatiran berlebihan terhadap berbagai aspek kehidupan, 
-    kesulitan berkonsentrasi, ketegangan otot, dan gangguan tidur.`,
-    
-    rencanaPerawatan: `1. Terapi Kognitif Behavioral (CBT) selama 12 sesi
-    2. Teknik relaksasi dan mindfulness
-    3. Evaluasi progress setiap 4 sesi
-    4. Konsultasi dengan psikiater jika diperlukan`,
-    
-    progressNotes: [
-      {
-        tanggal: "2024-01-15",
-        sesi: 1,
-        catatan: "Sesi awal assessment. Pasien kooperatif dan terbuka membahas masalah. Identifikasi trigger utama kecemasan."
-      },
-      {
-        tanggal: "2024-01-22",
-        sesi: 2,
-        catatan: "Mulai implementasi teknik breathing dan grounding. Pasien menunjukkan respons positif."
-      },
-      {
-        tanggal: "2024-01-29",
-        sesi: 3,
-        catatan: "Eksplorasi pola pikir negatif. Homework: thought record untuk minggu depan."
-      }
-    ],
-    
-    files: [
-      {
-        nama: "Assessment Awal.pdf",
-        ukuran: "2.4 MB",
-        tanggal: "15 Jan 2024",
-        jenis: "Assessment"
-      },
-      {
-        nama: "Progress Report 1.pdf",
-        ukuran: "1.8 MB",
-        tanggal: "22 Jan 2024",
-        jenis: "Progress Report"
-      },
-      {
-        nama: "CBT Worksheet.pdf",
-        ukuran: "856 KB",
-        tanggal: "29 Jan 2024",
-        jenis: "Worksheet"
-      }
-    ]
+    idArsip: id || "A-2024-001",
+    kodeArsip: "K-2024-001",
+    tanggalArsip: "2024-01-15",
   });
 
+  // Mock patient records within this archive
+  const [patientRecords, setPatientRecords] = useState([
+    {
+      id: "P001",
+      namaPasien: "Maria Santos",
+      kodeArsip: "K-2024-001",
+      tanggalArsip: "2024-01-15",
+      dokter: "Dr. Tanti",
+      file: "assessment_maria.pdf",
+    },
+    {
+      id: "P002",
+      namaPasien: "Ahmad Budi",
+      kodeArsip: "K-2024-001",
+      tanggalArsip: "2024-01-15",
+      dokter: "Dr. Lina",
+      file: "assessment_ahmad.pdf",
+    },
+  ]);
+
+  const [formData, setFormData] = useState({
+    namaPasien: "",
+    kodeArsip: arsipData.kodeArsip,
+    tanggalArsip: arsipData.tanggalArsip,
+    dokter: "",
+    file: null as File | null,
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newRecord = {
+      id: `P${String(patientRecords.length + 1).padStart(3, "0")}`,
+      namaPasien: formData.namaPasien,
+      kodeArsip: formData.kodeArsip,
+      tanggalArsip: formData.tanggalArsip,
+      dokter: formData.dokter,
+      file: formData.file?.name || "",
+    };
+    setPatientRecords([...patientRecords, newRecord]);
+    setDialogOpen(false);
+    setFormData({
+      namaPasien: "",
+      kodeArsip: arsipData.kodeArsip,
+      tanggalArsip: arsipData.tanggalArsip,
+      dokter: "",
+      file: null,
+    });
+  };
+
+  const handleDelete = (recordId: string) => {
+    setPatientRecords(patientRecords.filter((record) => record.id !== recordId));
+  };
+
   return (
-    <div className="p-6 space-y-6 max-w-6xl mx-auto">
+    <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="outline" onClick={() => navigate(-1)} className="gap-2">
-          <ArrowLeft className="w-4 h-4" />
-          Kembali
+      <div className="flex items-center gap-4 mb-6">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate("/arsip")}
+          className="hover:bg-muted"
+        >
+          <ArrowLeft className="w-5 h-5" />
         </Button>
         <div className="flex-1">
-          <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-3xl font-bold text-foreground">{arsipData.nama}</h1>
-            <Badge variant="outline" className="font-mono">
-              {arsipData.id}
-            </Badge>
-            <Badge variant="secondary">
-              {arsipData.kategori}
-            </Badge>
-            <Badge variant={arsipData.status === 'Aktif' ? 'default' : 'outline'}>
-              {arsipData.status}
-            </Badge>
-          </div>
-          <p className="text-muted-foreground">Detail arsip pasien klinik psikologi</p>
+          <h1 className="text-3xl font-bold text-foreground">Detail Arsip</h1>
+          <p className="text-muted-foreground mt-1">
+            Informasi lengkap arsip pasien dan data terkait
+          </p>
         </div>
-        <Button className="bg-gradient-primary gap-2">
-          <Edit className="w-4 h-4" />
-          Edit Arsip
-        </Button>
       </div>
 
-      <Tabs defaultValue="biodata" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="biodata">Biodata Pasien</TabsTrigger>
-          <TabsTrigger value="konseling">Hasil Konseling</TabsTrigger>
-          <TabsTrigger value="progress">Progress Notes</TabsTrigger>
-          <TabsTrigger value="files">File Arsip</TabsTrigger>
-        </TabsList>
+      {/* Archive Info Card */}
+      <Card className="shadow-card border-0">
+        <CardHeader className="bg-gradient-soft">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <CardTitle className="text-2xl mb-2">Informasi Arsip</CardTitle>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="outline" className="font-mono">
+                  {arsipData.idArsip}
+                </Badge>
+                <Badge variant="secondary">
+                  {arsipData.kodeArsip}
+                </Badge>
+              </div>
+            </div>
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-secondary hover:bg-secondary-dark text-secondary-foreground hover:shadow-hover transition-all duration-300 gap-2">
+                  <Plus className="w-4 h-4" />
+                  Tambah Data Pasien
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl">Tambah Data Arsip Pasien Baru</DialogTitle>
+                  <DialogDescription>
+                    Isi formulir di bawah untuk menambahkan data pasien ke dalam arsip ini
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="namaPasien">Nama Pasien *</Label>
+                      <Input
+                        id="namaPasien"
+                        placeholder="Masukkan nama lengkap"
+                        value={formData.namaPasien}
+                        onChange={(e) =>
+                          setFormData({ ...formData, namaPasien: e.target.value })
+                        }
+                        required
+                        className="bg-muted/50 border-border"
+                      />
+                    </div>
 
-        {/* Biodata Tab */}
-        <TabsContent value="biodata" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Personal Information */}
-            <Card className="shadow-card border-0">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5 text-primary" />
-                  Informasi Personal
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Nama Lengkap</p>
-                    <p className="font-medium">{arsipData.nama}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Usia</p>
-                    <p className="font-medium">{arsipData.usia} tahun</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Jenis Kelamin</p>
-                    <p className="font-medium">{arsipData.jenisKelamin}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Status Pernikahan</p>
-                    <p className="font-medium">{arsipData.statusPernikahan}</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-3 pt-2">
-                  <div className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-muted-foreground mt-1" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Alamat</p>
-                      <p className="font-medium">{arsipData.alamat}</p>
+                    <div className="space-y-2">
+                      <Label htmlFor="kodeArsip">Kode Arsip *</Label>
+                      <Input
+                        id="kodeArsip"
+                        value={formData.kodeArsip}
+                        readOnly
+                        className="bg-muted/50 border-border"
+                      />
                     </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">No. Telepon</p>
-                      <p className="font-medium">{arsipData.noTelepon}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Email</p>
-                      <p className="font-medium">{arsipData.email}</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
 
-            {/* Professional Information */}
-            <Card className="shadow-card border-0">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Brain className="w-5 h-5 text-secondary" />
-                  Informasi Konseling
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Pendidikan Terakhir</p>
-                    <p className="font-medium">{arsipData.pendidikan}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Pekerjaan</p>
-                    <p className="font-medium">{arsipData.pekerjaan}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Diagnosis Awal</p>
-                    <p className="font-medium">{arsipData.diagnosis}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Psikolog Penanggung Jawab</p>
-                    <p className="font-medium">{arsipData.psikolog}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Tanggal Konseling Pertama</p>
-                      <p className="font-medium">{new Date(arsipData.tanggal).toLocaleDateString('id-ID')}</p>
+                    <div className="space-y-2">
+                      <Label htmlFor="tanggalArsip">Tanggal Arsip *</Label>
+                      <Input
+                        id="tanggalArsip"
+                        type="date"
+                        value={formData.tanggalArsip}
+                        onChange={(e) =>
+                          setFormData({ ...formData, tanggalArsip: e.target.value })
+                        }
+                        required
+                        className="bg-muted/50 border-border"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="dokter">Dokter *</Label>
+                      <Select
+                        value={formData.dokter}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, dokter: value })
+                        }
+                      >
+                        <SelectTrigger className="bg-muted/50 border-border">
+                          <SelectValue placeholder="Pilih dokter" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Dr. Tanti">Dr. Tanti</SelectItem>
+                          <SelectItem value="Dr. Lina">Dr. Lina</SelectItem>
+                          <SelectItem value="Admin">Admin</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
 
-            {/* Medical History */}
-            <Card className="shadow-card border-0 lg:col-span-2">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Heart className="w-5 h-5 text-accent" />
-                  Riwayat Medis
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-foreground leading-relaxed">{arsipData.riwayatMedis}</p>
-              </CardContent>
-            </Card>
+                  <div className="space-y-2">
+                    <Label htmlFor="file">Upload File (PDF) *</Label>
+                    <Input
+                      id="file"
+                      type="file"
+                      accept=".pdf"
+                      onChange={(e) =>
+                        setFormData({ ...formData, file: e.target.files?.[0] || null })
+                      }
+                      required
+                      className="bg-muted/50 border-border cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary-dark"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Hanya file PDF yang diperbolehkan
+                    </p>
+                  </div>
+
+                  <div className="flex justify-end gap-3 pt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setDialogOpen(false)}
+                    >
+                      Batal
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="bg-secondary hover:bg-secondary-dark text-secondary-foreground hover:shadow-hover transition-all duration-300"
+                    >
+                      Simpan Data
+                    </Button>
+                  </div>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
-        </TabsContent>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">ID Arsip</p>
+              <p className="font-medium text-foreground">{arsipData.idArsip}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Kode Arsip</p>
+              <p className="font-medium text-foreground">{arsipData.kodeArsip}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Tanggal Arsip</p>
+              <p className="font-medium text-foreground">
+                {new Date(arsipData.tanggalArsip).toLocaleDateString("id-ID", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-        {/* Hasil Konseling Tab */}
-        <TabsContent value="konseling" className="space-y-6">
-          <Card className="shadow-card border-0">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Brain className="w-5 h-5 text-primary" />
-                Diagnosis Lengkap
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-foreground leading-relaxed">{arsipData.diagnosisLengkap}</p>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-card border-0">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="w-5 h-5 text-secondary" />
-                Rencana Perawatan
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="prose prose-sm max-w-none">
-                {arsipData.rencanaPerawatan.split('\n').map((line, index) => (
-                  <p key={index} className="text-foreground leading-relaxed mb-2">
-                    {line}
-                  </p>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Progress Notes Tab */}
-        <TabsContent value="progress" className="space-y-6">
-          <Card className="shadow-card border-0">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="w-5 h-5 text-accent" />
-                Catatan Progress Sesi
-              </CardTitle>
-              <CardDescription>
-                Ringkasan dari setiap sesi konseling yang telah dilakukan
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {arsipData.progressNotes.map((note, index) => (
-                  <div key={index} className="flex gap-4 p-4 bg-muted/30 rounded-lg">
-                    <div className="flex-shrink-0">
-                      <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center text-primary-foreground font-semibold">
-                        {note.sesi}
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <p className="font-medium text-foreground">Sesi {note.sesi}</p>
-                        <Badge variant="outline" className="text-xs">
-                          {new Date(note.tanggal).toLocaleDateString('id-ID')}
+      {/* Patient Records Table */}
+      <Card className="shadow-card border-0">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="w-5 h-5 text-primary" />
+            Data Pasien dalam Arsip
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="rounded-lg border border-border overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/50">
+                  <TableHead className="font-semibold">Nama Pasien</TableHead>
+                  <TableHead className="font-semibold">Kode Arsip</TableHead>
+                  <TableHead className="font-semibold">Tanggal Arsip</TableHead>
+                  <TableHead className="font-semibold">Dokter</TableHead>
+                  <TableHead className="font-semibold">File</TableHead>
+                  <TableHead className="font-semibold text-right">Aksi</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {patientRecords.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                      Belum ada data pasien dalam arsip ini
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  patientRecords.map((record) => (
+                    <TableRow key={record.id} className="hover:bg-muted/30 transition-colors">
+                      <TableCell className="font-medium">{record.namaPasien}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="font-mono">
+                          {record.kodeArsip}
                         </Badge>
-                      </div>
-                      <p className="text-foreground leading-relaxed">{note.catatan}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Files Tab */}
-        <TabsContent value="files" className="space-y-6">
-          <Card className="shadow-card border-0">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-info" />
-                File Arsip
-              </CardTitle>
-              <CardDescription>
-                Dokumen dan file yang terkait dengan arsip pasien
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {arsipData.files.map((file, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/30 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-secondary rounded-lg flex items-center justify-center">
-                        <FileText className="w-5 h-5 text-secondary-foreground" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-foreground">{file.nama}</p>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span>{file.ukuran}</span>
-                          <span>•</span>
-                          <span>{file.tanggal}</span>
-                          <span>•</span>
-                          <Badge variant="outline" className="text-xs">
-                            {file.jenis}
-                          </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {new Date(record.tanggalArsip).toLocaleDateString("id-ID")}
+                      </TableCell>
+                      <TableCell>{record.dokter}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-sm">{record.file}</span>
                         </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button size="sm" variant="outline" className="gap-2">
-                        <Download className="w-4 h-4" />
-                        Unduh
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-primary hover:text-primary hover:bg-primary/10"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-secondary hover:text-secondary hover:bg-secondary/10"
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => handleDelete(record.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
