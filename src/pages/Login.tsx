@@ -25,17 +25,17 @@ const Login = () => {
       <div className="w-full max-w-md">
         {/* Logo Section */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-primary rounded-full mb-4 shadow-soft">
-            <Brain className="w-8 h-8 text-primary-foreground" />
+        <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-primary rounded-2xl mb-6 shadow-elevation">
+            <Brain className="w-10 h-10 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">Klinik Psikologi Sehat Mental</h1>
-          <p className="text-muted-foreground">Sistem Informasi Arsip Digital</p>
+          <h1 className="text-4xl font-bold text-foreground mb-2">Fideya Psikologi</h1>
+          <p className="text-muted-foreground text-lg">Sistem Informasi Arsip Digital</p>
         </div>
 
-        <Card className="shadow-card border-0">
-          <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-xl">Selamat Datang</CardTitle>
-            <CardDescription>
+        <Card className="shadow-elevation border-0">
+          <CardHeader className="space-y-2 text-center pb-6">
+            <CardTitle className="text-2xl font-semibold">Selamat Datang</CardTitle>
+            <CardDescription className="text-base">
               Silakan masuk untuk mengakses sistem
             </CardDescription>
           </CardHeader>
@@ -65,15 +65,18 @@ const Login = () => {
                   className="border-border focus:ring-primary"
                 />
               </div>
-              <Button type="submit" className="w-full bg-gradient-primary hover:shadow-hover transition-all duration-300">
+              <Button 
+                type="submit" 
+                className="w-full bg-primary hover:bg-primary-dark text-primary-foreground shadow-soft hover:shadow-hover transition-all duration-300"
+              >
                 Masuk
               </Button>
             </form>
           </CardContent>
         </Card>
 
-        <div className="text-center mt-6 text-sm text-muted-foreground">
-          © 2024 Klinik Psikologi Sehat Mental. All rights reserved.
+        <div className="text-center mt-8 text-sm text-muted-foreground">
+          © 2025 Fideya Psikologi. All rights reserved.
         </div>
       </div>
     </div>

@@ -81,6 +81,10 @@ export default {
         'soft': 'var(--shadow-soft)',
         'card': 'var(--shadow-card)',
         'hover': 'var(--shadow-hover)',
+        'elevation': 'var(--shadow-elevation)',
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       keyframes: {
         "accordion-down": {

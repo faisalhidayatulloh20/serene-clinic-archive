@@ -4,16 +4,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Plus, Eye, Edit, Trash2, Download, FileText } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { ArrowLeft, Plus, Eye, Edit, Trash2, Download, FileText, Search, X } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const DetailArsip = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const { toast } = useToast();
+  const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterDokter, setFilterDokter] = useState("all");
 
   // Mock arsip data
   const [arsipData] = useState({
@@ -27,16 +31,20 @@ const DetailArsip = () => {
     {
       id: "P001",
       namaPasien: "Maria Santos",
+      jenisKelamin: "Perempuan",
+      diagnosa: "Depresi Ringan",
       kodeArsip: "K-2024-001",
-      tanggalArsip: "2024-01-15",
+      tanggalPeriksa: "2024-01-15",
       dokter: "Dr. Tanti",
       file: "assessment_maria.pdf",
     },
     {
       id: "P002",
       namaPasien: "Ahmad Budi",
+      jenisKelamin: "Laki-laki",
+      diagnosa: "Kecemasan",
       kodeArsip: "K-2024-001",
-      tanggalArsip: "2024-01-15",
+      tanggalPeriksa: "2024-01-15",
       dokter: "Dr. Lina",
       file: "assessment_ahmad.pdf",
     },
@@ -44,10 +52,22 @@ const DetailArsip = () => {
 
   const [formData, setFormData] = useState({
     namaPasien: "",
+    jenisKelamin: "",
+    diagnosa: "",
     kodeArsip: arsipData.kodeArsip,
-    tanggalArsip: arsipData.tanggalArsip,
+    tanggalPeriksa: "",
     dokter: "",
     file: null as File | null,
+  });
+
+  const filteredRecords = patientRecords.filter((record) => {
+    const matchesSearch = 
+      record.namaPasien.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      record.diagnosa.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesDokter = filterDokter === "all" || record.dokter === filterDokter;
+    
+    return matchesSearch && matchesDokter;
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -55,19 +75,27 @@ const DetailArsip = () => {
     const newRecord = {
       id: `P${String(patientRecords.length + 1).padStart(3, "0")}`,
       namaPasien: formData.namaPasien,
+      jenisKelamin: formData.jenisKelamin,
+      diagnosa: formData.diagnosa,
       kodeArsip: formData.kodeArsip,
-      tanggalArsip: formData.tanggalArsip,
+      tanggalPeriksa: formData.tanggalPeriksa,
       dokter: formData.dokter,
       file: formData.file?.name || "",
     };
     setPatientRecords([...patientRecords, newRecord]);
-    setDialogOpen(false);
+    setShowForm(false);
     setFormData({
       namaPasien: "",
+      jenisKelamin: "",
+      diagnosa: "",
       kodeArsip: arsipData.kodeArsip,
-      tanggalArsip: arsipData.tanggalArsip,
+      tanggalPeriksa: "",
       dokter: "",
       file: null,
+    });
+    toast({
+      title: "Berhasil",
+      description: "Data pasien berhasil ditambahkan",
     });
   };
 
@@ -283,7 +311,7 @@ const DetailArsip = () => {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {new Date(record.tanggalArsip).toLocaleDateString("id-ID")}
+                        {new Date(record.tanggalPeriksa).toLocaleDateString("id-ID")}
                       </TableCell>
                       <TableCell>{record.dokter}</TableCell>
                       <TableCell>

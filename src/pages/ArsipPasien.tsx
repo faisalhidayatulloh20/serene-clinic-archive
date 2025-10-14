@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
 import { 
@@ -14,6 +13,7 @@ import {
   Edit, 
   Trash2, 
   FileText,
+  X
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -21,7 +21,7 @@ const ArsipPasien = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   
   const [arsipData, setArsipData] = useState([
     {
@@ -62,7 +62,7 @@ const ArsipPasien = () => {
       tanggalArsip: formData.tanggalArsip,
     };
     setArsipData([...arsipData, newArsip]);
-    setDialogOpen(false);
+    setShowForm(false);
     setFormData({
       kodeArsip: "",
       tanggalArsip: "",
@@ -83,31 +83,48 @@ const ArsipPasien = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Manajemen Arsip Pasien</h1>
           <p className="text-muted-foreground mt-1">
             Kelola data arsip pasien klinik psikologi
           </p>
         </div>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-secondary hover:bg-secondary-dark text-secondary-foreground hover:shadow-hover transition-all duration-300 gap-2">
-              <Plus className="w-4 h-4" />
-              Tambah Arsip Pasien
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="text-2xl">Tambah Arsip Pasien Baru</DialogTitle>
-              <DialogDescription>
-                Isi formulir di bawah untuk menambahkan arsip pasien baru
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-6 mt-4">
-              <div className="space-y-4">
+        <Button 
+          onClick={() => setShowForm(!showForm)}
+          className="bg-primary hover:bg-primary-dark text-primary-foreground shadow-soft hover:shadow-hover transition-all duration-300 gap-2"
+        >
+          <Plus className="w-4 h-4" />
+          Tambah Arsip Pasien
+        </Button>
+      </div>
+
+      {/* Form - Slide Down */}
+      {showForm && (
+        <Card className="shadow-card border-0 animate-slide-down">
+          <CardHeader className="bg-gradient-soft">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-xl">Tambah Arsip Pasien Baru</CardTitle>
+                <CardDescription>
+                  Isi formulir di bawah untuk menambahkan arsip pasien baru
+                </CardDescription>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowForm(false)}
+                className="hover:bg-muted"
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="kodeArsip">Kode Arsip *</Label>
                   <Input
@@ -141,21 +158,21 @@ const ArsipPasien = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setDialogOpen(false)}
+                  onClick={() => setShowForm(false)}
                 >
                   Batal
                 </Button>
                 <Button
                   type="submit"
-                  className="bg-secondary hover:bg-secondary-dark text-secondary-foreground hover:shadow-hover transition-all duration-300"
+                  className="bg-primary hover:bg-primary-dark text-primary-foreground shadow-soft hover:shadow-hover transition-all duration-300"
                 >
                   Simpan Arsip
                 </Button>
               </div>
             </form>
-          </DialogContent>
-        </Dialog>
-      </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Search */}
       <Card className="shadow-card border-0 mb-6">
@@ -166,7 +183,7 @@ const ArsipPasien = () => {
               placeholder="Cari berdasarkan ID Arsip atau Kode Arsip..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-muted/50 border-border focus:ring-primary"
+              className="pl-10 bg-muted/50 border-border focus:ring-2 focus:ring-primary"
             />
           </div>
         </CardContent>
