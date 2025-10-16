@@ -138,115 +138,13 @@ const DetailArsip = () => {
                 </Badge>
               </div>
             </div>
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="bg-secondary hover:bg-secondary-dark text-secondary-foreground hover:shadow-hover transition-all duration-300 gap-2">
-                  <Plus className="w-4 h-4" />
-                  Tambah Data Pasien
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle className="text-2xl">Tambah Data Arsip Pasien Baru</DialogTitle>
-                  <DialogDescription>
-                    Isi formulir di bawah untuk menambahkan data pasien ke dalam arsip ini
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-6 mt-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="namaPasien">Nama Pasien *</Label>
-                      <Input
-                        id="namaPasien"
-                        placeholder="Masukkan nama lengkap"
-                        value={formData.namaPasien}
-                        onChange={(e) =>
-                          setFormData({ ...formData, namaPasien: e.target.value })
-                        }
-                        required
-                        className="bg-muted/50 border-border"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="kodeArsip">Kode Arsip *</Label>
-                      <Input
-                        id="kodeArsip"
-                        value={formData.kodeArsip}
-                        readOnly
-                        className="bg-muted/50 border-border"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="tanggalArsip">Tanggal Arsip *</Label>
-                      <Input
-                        id="tanggalArsip"
-                        type="date"
-                        value={formData.tanggalArsip}
-                        onChange={(e) =>
-                          setFormData({ ...formData, tanggalArsip: e.target.value })
-                        }
-                        required
-                        className="bg-muted/50 border-border"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="dokter">Dokter *</Label>
-                      <Select
-                        value={formData.dokter}
-                        onValueChange={(value) =>
-                          setFormData({ ...formData, dokter: value })
-                        }
-                      >
-                        <SelectTrigger className="bg-muted/50 border-border">
-                          <SelectValue placeholder="Pilih dokter" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Dr. Tanti">Dr. Tanti</SelectItem>
-                          <SelectItem value="Dr. Lina">Dr. Lina</SelectItem>
-                          <SelectItem value="Admin">Admin</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="file">Upload File (PDF) *</Label>
-                    <Input
-                      id="file"
-                      type="file"
-                      accept=".pdf"
-                      onChange={(e) =>
-                        setFormData({ ...formData, file: e.target.files?.[0] || null })
-                      }
-                      required
-                      className="bg-muted/50 border-border cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary-dark"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Hanya file PDF yang diperbolehkan
-                    </p>
-                  </div>
-
-                  <div className="flex justify-end gap-3 pt-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setDialogOpen(false)}
-                    >
-                      Batal
-                    </Button>
-                    <Button
-                      type="submit"
-                      className="bg-secondary hover:bg-secondary-dark text-secondary-foreground hover:shadow-hover transition-all duration-300"
-                    >
-                      Simpan Data
-                    </Button>
-                  </div>
-                </form>
-              </DialogContent>
-            </Dialog>
+            <Button 
+              onClick={() => setShowForm(!showForm)}
+              className="bg-secondary hover:bg-secondary-dark text-secondary-foreground hover:shadow-hover transition-all duration-300 gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Tambah Data Pasien
+            </Button>
           </div>
         </CardHeader>
         <CardContent className="pt-6">
@@ -272,6 +170,142 @@ const DetailArsip = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Form Tambah Data Pasien */}
+      {showForm && (
+        <Card className="shadow-card border-0 animate-fade-in">
+          <CardHeader className="bg-gradient-soft">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xl">Tambah Data Pasien Baru</CardTitle>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowForm(false)}
+                className="hover:bg-muted"
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="namaPasien">Nama Pasien *</Label>
+                  <Input
+                    id="namaPasien"
+                    placeholder="Masukkan nama lengkap"
+                    value={formData.namaPasien}
+                    onChange={(e) =>
+                      setFormData({ ...formData, namaPasien: e.target.value })
+                    }
+                    required
+                    className="bg-muted/50 border-border"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="jenisKelamin">Jenis Kelamin *</Label>
+                  <Select
+                    value={formData.jenisKelamin}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, jenisKelamin: value })
+                    }
+                  >
+                    <SelectTrigger className="bg-muted/50 border-border">
+                      <SelectValue placeholder="Pilih jenis kelamin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Laki-laki">Laki-laki</SelectItem>
+                      <SelectItem value="Perempuan">Perempuan</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="tanggalPeriksa">Tanggal Periksa *</Label>
+                  <Input
+                    id="tanggalPeriksa"
+                    type="date"
+                    value={formData.tanggalPeriksa}
+                    onChange={(e) =>
+                      setFormData({ ...formData, tanggalPeriksa: e.target.value })
+                    }
+                    required
+                    className="bg-muted/50 border-border"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="dokter">Dokter *</Label>
+                  <Select
+                    value={formData.dokter}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, dokter: value })
+                    }
+                  >
+                    <SelectTrigger className="bg-muted/50 border-border">
+                      <SelectValue placeholder="Pilih dokter" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Dr. Tanti">Dr. Tanti</SelectItem>
+                      <SelectItem value="Dr. Lina">Dr. Lina</SelectItem>
+                      <SelectItem value="Admin">Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="diagnosa">Diagnosa *</Label>
+                <Textarea
+                  id="diagnosa"
+                  placeholder="Masukkan diagnosa"
+                  value={formData.diagnosa}
+                  onChange={(e) =>
+                    setFormData({ ...formData, diagnosa: e.target.value })
+                  }
+                  required
+                  className="bg-muted/50 border-border min-h-[100px]"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="file">Upload File (PDF) *</Label>
+                <Input
+                  id="file"
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) =>
+                    setFormData({ ...formData, file: e.target.files?.[0] || null })
+                  }
+                  required
+                  className="bg-muted/50 border-border cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Hanya file PDF yang diperbolehkan
+                </p>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowForm(false)}
+                >
+                  Batal
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-secondary hover:bg-secondary-dark text-secondary-foreground hover:shadow-hover transition-all duration-300"
+                >
+                  Simpan Data
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Patient Records Table */}
       <Card className="shadow-card border-0">
