@@ -11,6 +11,7 @@ import Pencarian from "./pages/Pencarian";
 import DetailArsip from "./pages/DetailArsip";
 import ManajemenUser from "./pages/ManajemenUser";
 import NotFound from "./pages/NotFound";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -23,12 +24,12 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Layout />}>
+          <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/arsip" element={<ArsipPasien />} />
             <Route path="/arsip/:id" element={<DetailArsip />} />
             <Route path="/pencarian" element={<Pencarian />} />
-            <Route path="/users" element={<ManajemenUser />} />
+            <Route path="/users" element={<ProtectedRoute requireAdmin><ManajemenUser /></ProtectedRoute>} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
